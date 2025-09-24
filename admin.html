@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel</title>
+</head>
+<body>
+  <div class="container">
+    <h1><b>Admin Panal Dashboard</b></h1>
+    <!-- UC Rate Update -->
+    <div>
+      <label>UC 60 Price (MMK):<input type="number" id="uc60" placeholder="4,903"></label>
+      <label>UC 300 Price (MMK):<input type="number" id="uc300" placeholder="24,203"></label>
+      <label>UC 600 Price (MMK):<input type="number" id="uc600" placeholder="48,453"></label>
+      <label>UC 1500 Price (MMK):<input type="number" id="uc1500" placeholder="119,702"></label>
+      <label>UC 3000 Price (MMK):<input type="number" id="uc3000" placeholder="238,453"></label>
+
+      <button id="updateRate">Update Rates</button>
+      <p id="ucRateText"></p>
+    </div>
+    <hr>
+    <!-- Orders Section -->
+    <button id="loadBtn">Load Orders</button>
+    <div id="orders"></div>
+    <hr>
+    <!-- Logout -->
+    <button onclick="logout()">Logout</button>
+  </div>   
+
+  <style>
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      width: 100%;
+      max-width: 480px;   /* Desktop မှာ အကျယ်မကျော် */
+      margin: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      font-weight: 500;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    #ucRateText {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    /* Small screen optimization */
+    @media (max-width: 480px) {
+      .container {
+        margin: 10px;
+        padding: 16px;
+      }
+      h1 {
+        font-size: 1.25rem;
+      }
+      input, button {
+        font-size: 0.9rem;
+        padding: 8px;
+      }
+    }
+  </style>
+
+  <script>
+    // === Admin Login Check ===
+    const key = sessionStorage.getItem("adminKey");
+    if(!key){
+      window.location.href = "login.html"; // key ပြန်ပို့
+    }
+
+    const loadBtn = document.getElementById('loadBtn');
+    const ordersDiv = document.getElementById('orders');
+    const ucRateInput = document.getElementById('ucRateInput');
+    const ucRateText = document.getElementById('ucRateText');
+
+    // === Load existing rates ===
+    (function initRate(){
+    const stored = localStorage.getItem("rates");
+    if(stored){
+      const rates = JSON.parse(stored);
+      if(rates["60"]) document.getElementById('uc60').value = rates["60"];
+      if(rates["300"]) document.getElementById('uc300').value = rates["300"];
+      if(rates["600"]) document.getElementById('uc600').value = rates["600"];
+
+      document.getElementById('ucRateText').textContent = 
+      "Current: 60 UC = "+rates["60"]+" MMK, 300 UC = "+rates["300"]+" MMK";
+      }
+    })();
+
+    // === UC Rate Update ===
+    document.getElementById('updateRate').addEventListener('click', ()=>{
+    const uc60 = document.getElementById('uc60').value.trim();
+    const uc300 = document.getElementById('uc300').value.trim();
+    const uc600 = document.getElementById('uc600').value.trim();
+    const uc1500 = document.getElementById('uc1500').value.trim();
+    const uc3000 = document.getElementById('uc3000').value.trim();
+     
+    if(!uc60 || !uc3000) return alert("Both rates required");
+
+    const rates = { "60": parseInt(uc60), "300": parseInt(uc300),"600": parseInt(uc600), "1500": parseInt(uc1500), "3000": parseInt(uc3000) };
+    localStorage.setItem("rates", JSON.stringify(rates));
+
+    document.getElementById('ucRateText').textContent = 
+      "Updated: 60 UC = "+uc60+" MMK, 300 UC = "+uc300+" MMK, 600 UC = "+uc600+" MMK, 1500 UC = "+uc1500+" MMK, 3000 UC = "+uc3000+" MMK";
+      alert("UC Rates Updated!");
+    });
+
+    (function initRate(){
+      const r = localStorage.getItem("ucRate") || ucRateInput.value || 2100;
+      ucRateText.textContent = "လက်ရှိ ဈေးနှုန်း ➝ 1 UC = " + r + " MMK";
+    })();
+
+    // === Orders Load ===
+    loadBtn.addEventListener('click', async ()=>{
+    if(!key) return alert('Admin Key required');
+    ordersDiv.innerHTML = 'Loading...';
+    try {
+    const r = await fetch('/admin/orders', { headers: {'x-admin-key': key }});
+    const j = await r.json();
+      if(!r.ok){ ordersDiv.textContent = 'Error: ' + (j.error||r.status); return; }
+      if(!j.orders || j.orders.length === 0){ ordersDiv.textContent = 'No orders'; return; }
+      ordersDiv.innerHTML = '';
+      j.orders.forEach(o=>{
+        const el = document.createElement('div');
+        el.className = 'order';
+        el.innerHTML = `<b>${o.id}</b> - ${o.playerId} - ${o.amountUc} UC - ${o.amountK} MMK - <i>${o.status}</i>
+          <br>${o.createdAt}
+          <br>${o.slip ? '<a href="/uploads/'+o.slip+'" target="_blank">View slip</a>' : 'No slip'}
+          <br><button class="markpaid" data-id="${o.id}">Mark PAID</button>
+          <hr>`;
+        ordersDiv.appendChild(el);
+      });
+
+    document.querySelectorAll('.markpaid').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.id;
+      btn.disabled = true;
+      localStorage.setItem("orderStatus_"+id, "paid");      
+
+    const r2 = await fetch('/admin/mark-paid', {
+      method:'POST',
+        headers: {'Content-Type':'application/json','x-admin-key': key},
+        body: JSON.stringify({id: "1"})
+          });
+          const j2 = await r2.json();
+          if(j2.ok) alert('Marked PAID: ' + id);
+          else alert('Error: ' + (j2.error||'unknown'));
+          loadBtn.click();
+        });
+      });
+
+      } catch(err){
+        ordersDiv.textContent = 'Failed: ' + err.message;
+      }
+    });
+
+    // === Logout ===
+    function logout() {
+      sessionStorage.removeItem("adminKey");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
