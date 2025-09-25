@@ -1,0 +1,23 @@
+[
+  {
+    "id": "ORD1758698124517",
+    "playerId": "52246987088",
+    "amountUc": 300,
+    "amountK": 24203,
+    "provider": "PUBG",
+    "slip": "1758698121963-401366.png",
+    "status": "PENDING",
+    "createdAt": "2025-09-24T07:15:24.517Z"
+  },
+  {
+    "id": "1",
+    "playerId": "52246987088",
+    "amountUc": 300,
+    "amountK": 4500,
+    "provider": "PUBG",
+    "slip": "1757606153839-536739.png",
+    "status": "PAID",
+    "createdAt": "2025-09-11T15:55:56.561Z",
+    "paidAt": "2025-09-24T07:17:12.862Z"
+  }
+]
