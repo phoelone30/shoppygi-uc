@@ -6,6 +6,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
+const cors = require('cors');
 
 dotenv.config();
 const PORT = process.env.PORT || 4000;
@@ -22,7 +23,7 @@ const ADMIN_KEY = "215355";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cors());
 
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
