@@ -8,7 +8,7 @@ const path = require("path");
 const FormData = require("form-data");
 
 dotenv.config();
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 4000;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
 
