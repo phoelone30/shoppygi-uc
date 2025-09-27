@@ -103,7 +103,6 @@ ${order.paidAt ? "✅ Paid At: " + order.paidAt : ""}
   }
 }
 
-// === Order Create ===
 app.post('/order', upload.single('slip'), async (req, res) => {
   const { playerId, amountUc, amountK = 0, provider = 'PUBG' } = req.body;
 
@@ -135,7 +134,7 @@ app.post('/order', upload.single('slip'), async (req, res) => {
 });
 
 // === Admin: list orders ===
-app.get('admin/orders', (req, res) => {
+app.get('/admin/orders', (req, res) => {
   const key = req.headers['x-admin-key'] || '';
   if (key !== ADMIN_KEY) return res.status(401).json({ error: 'unauthorized' });
   const orders = readOrders();
@@ -143,7 +142,7 @@ app.get('admin/orders', (req, res) => {
 });
 
 // === Admin: mark paid ===
-app.post('admin/mark-paid', (req, res) => {
+app.post('/admin/mark-paid', (req, res) => {
   const key = req.headers['x-admin-key'] || '';
   if (key !== ADMIN_KEY) return res.status(401).json({ error: 'unauthorized' });
   const id = req.body.id;
@@ -158,7 +157,7 @@ app.post('admin/mark-paid', (req, res) => {
 });
 
 // === Serve uploads ===
-app.get('uploads/:file', (req, res) => {
+app.get('/uploads/:file', (req, res) => {
   const f = path.join(uploadsDir, req.params.file);
   if (fs.existsSync(f)) res.sendFile(f);
   else res.status(404).send('Not found');
