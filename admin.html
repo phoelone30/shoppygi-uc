@@ -160,7 +160,7 @@
     if(!key) return alert('Admin Key required');
     ordersDiv.innerHTML = 'Loading...';
     try {
-    const r = await fetch('https://shoppygi-uc.onrender.com/admin/orders', { headers: {'x-admin-key': key }});
+    const r = await fetch('https://my-backend-srzj.onrender.com/admin/orders', { headers: {'x-admin-key': key }});
     const j = await r.json();
       if(!r.ok){ ordersDiv.textContent = 'Error: ' + (j.error||r.status); return; }
       if(!j.orders || j.orders.length === 0){ ordersDiv.textContent = 'No orders'; return; }
@@ -182,7 +182,7 @@
       btn.disabled = true;
       localStorage.setItem("orderStatus_"+id, "paid");      
 
-    const r2 = await fetch('https://shoppygi-uc.onrender.com/admin/mark-paid', {
+    const r2 = await fetch('https://my-backend-srzj.onrender.com/admin/mark-paid', {
       method:'POST',
         headers: {'Content-Type':'application/json','x-admin-key': key},
         body: JSON.stringify({id: "1"})
