@@ -27,7 +27,7 @@ async function checkLogin() {
   const errorMsg = document.getElementById('errorMsg');
 
   try {
-    const res = await fetch('https://my-backend-srzj.onrender.com/admin/check-key', {
+    const res = await fetch('https://shoppygi-uc.onrender.com/admin/check-key', {
       headers: { 'x-admin-key': key }
     });
     if (res.ok) {
