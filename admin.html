@@ -169,9 +169,11 @@
       j.orders.forEach(o=>{
         const el = document.createElement('div');
         el.className = 'order';
-        el.innerHTML = `<b>${o.id}</b> - ${o.playerId} - ${o.amountUc} UC - ${o.amountK} MMK - <i>${o.status}</i>
+        el.innerHTML = 
+         `<b>${o.id}</b> - ${o.playerId} - ${o.amountUc} UC - ${o.amountK} MMK - <i>${o.status}</i>
           <br>${o.createdAt}
-          <br>${o.slip ? '<a href="https://shoppygi-uc.onrender.com/uploads/'+o.slip+'" target="_blank">View slip</a>' : 'No slip'}
+          <br>${o.slip }
+            ? '<a href='https://shoppygi-uc.onrender.com/uploads/${o.slip}' target="_blank">View slip</a>' : 'No slip'}
           <br><button class="markpaid" data-id="${o.id}">Mark PAID</button>
           <hr>`;
         ordersDiv.appendChild(el);
