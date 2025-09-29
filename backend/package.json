@@ -4,7 +4,7 @@
   "description": "Simple demo Codashop-like site (PUBG UC) with upload-to-telegram and admin mark-paid flow",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+  "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
