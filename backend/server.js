@@ -6,7 +6,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
-const cors = require('cors');
+const cors = require("cors");
 
 dotenv.config();
 const PORT = process.env.PORT || 4000;
