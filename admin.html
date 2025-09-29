@@ -160,28 +160,36 @@
     if(!key) return alert('Admin Key required');
     ordersDiv.innerHTML = 'Loading...';
     try {
-    const r = await fetch('https://shoppygi-uc.onrender.com/admin/orders',
-     { headers: {'x-admin-key': key }});
-    const j = await r.json();
-      if(!r.ok){ ordersDiv.textContent = 'Error: ' + (j.error||r.status); return; }
-      if(!j.orders || j.orders.length === 0){ ordersDiv.textContent = 'No orders'; return; }
+      const r = await fetch('https://shoppygi-uc.onrender.com/admin/orders', {
+        headers: { 'x-admin-key': key }
+      });
+      const j = await r.json();
+      if(!r.ok){ 
+        ordersDiv.textContent = 'Error: ' + (j.error || r.status); 
+        return; 
+      }
+      if(!j.orders || j.orders.length === 0){ 
+        ordersDiv.textContent = 'No orders'; 
+        return; 
+      }
       ordersDiv.innerHTML = '';
       j.orders.forEach(o=>{
         const el = document.createElement('div');
         el.className = 'order';
         el.innerHTML = 
-         `<b>${o.id}</b> - ${o.playerId} - ${o.amountUc} UC - ${o.amountK} MMK - <i>${o.status}</i>
+          `<b>${o.id}</b> - ${o.playerId} - ${o.amountUc} UC - ${o.amountK} MMK - <i>${o.status}</i>
           <br>${o.createdAt}
-          <br>${o.slip }
-            ? '<a href='https://shoppygi-uc.onrender.com/uploads/${o.slip}' target="_blank">View slip</a>' : 'No slip'}
-          <br><button class="markpaid" data-id="${o.id}">Mark PAID</button>
-          <hr>`;
-        ordersDiv.appendChild(el);
+          <br>${o.slip 
+            ? '<a href="https://shoppygi-uc.onrender.com/uploads/${o.slip}" target="_blank">View slip</a>' 
+            : 'No slip'}
+        <br><button class="markpaid" data-id="${o.id}">Mark PAID</button>
+        <hr>`;
+            ordersDiv.appendChild(el);
+          });
+        } catch(err){
+          ordersDiv.textContent = 'Error: ' + err.message;
+        }
       });
-    //} catch(err){
-    //ordersDiv.textContent = 'Error: ' + err.message;
-  //}
-//});
 
     document.querySelectorAll('.markpaid').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
@@ -200,11 +208,6 @@
           loadBtn.click();
         });
       });
-
-      } catch(err){
-        ordersDiv.textContent = 'Failed: ' + err.message;
-      }
-    });
 
     // === Logout ===
     function logout() {
