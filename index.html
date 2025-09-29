@@ -74,7 +74,7 @@
 
     document.getElementById('msg').textContent = 'Uploading...';
     try {
-      const resp = await fetch('https://my-backend-srzj.onrender.com/order', { method: 'POST', body: fd });
+      const resp = await fetch('/orders', { method: 'POST', body: fd });
       const data = await resp.json();
       if(data.ok){
         document.getElementById('msg').textContent = 'Order submitted! Order ID: ' + data.order.id;
